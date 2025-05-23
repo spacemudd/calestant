@@ -21,6 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
         slotMaxTime: '17:00:00',
         firstDay: 0,
         hiddenDays: [5, 6],
+        events: '/events',
         selectable: true,
         select(info) {
             const title = prompt('Enter Event Title:');
