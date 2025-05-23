@@ -34,4 +34,24 @@ class ProvisionLogController extends Controller
 
         return response()->json(['message' => 'Log entry created successfully.']);
     }
+
+    public function delete(Request $request)
+    {
+        $request->validate([
+            'provision_id' => 'required|exists:provisions,id',
+            'start_time' => 'required|date',
+        ]);
+
+        $log = ProvisionLog::where('provision_id', $request->provision_id)
+            ->whereDate('start_time', $request->start_time)
+            ->whereTime('start_time', date('H:i:s', strtotime($request->start_time)))
+            ->first();
+
+        if ($log) {
+            $log->delete();
+            return response()->json(['message' => 'Log deleted successfully.']);
+        }
+
+        return response()->json(['message' => 'Log not found.'], 404);
+    }
 }

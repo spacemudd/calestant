@@ -35,6 +35,7 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/logs/create', [ProvisionLogController::class, 'create'])->name('provision-logs.create');
     Route::post('/logs', [ProvisionLogController::class, 'store'])->name('provision-logs.store');
+    Route::post('/provision-logs/delete', [ProvisionLogController::class, 'delete'])->name('provision-logs.delete');
 });
 
 require __DIR__.'/auth.php';

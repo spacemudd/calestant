@@ -43,36 +43,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 })
                 .catch(failureCallback);
         },
-        selectable: true,
-        select(info) {
-            const title = prompt('Enter Event Title:');
-            if (title) {
-                fetch('/events', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-                    },
-                    body: JSON.stringify({
-                        title: title,
-                        start: new Date(info.startStr).toISOString(),
-                        end: new Date(info.endStr).toISOString(),
-                        allDay: info.allDay
-                    })
-                })
-                .then(response => response.json())
-                .then(event => {
-                    calendar.addEvent({
-                        id: event.id,
-                        title: event.title,
-                        start: event.start,
-                        end: event.end,
-                        allDay: event.allDay
-                    });
-                });
-            }
-            calendar.unselect();
-        },
+        selectable: false,
         eventDidMount: function(info) {
             const wrapper = document.createElement('div');
             wrapper.style.position = 'relative';
@@ -109,6 +80,42 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
 
                 modal.classList.remove('hidden');
+
+                const existingDelete = modal.querySelector('#delete-log-btn');
+                if (existingDelete) existingDelete.remove();
+
+                if (info.event.extendedProps.logged) {
+                    const deleteBtn = document.createElement('button');
+                    deleteBtn.id = 'delete-log-btn';
+                    deleteBtn.textContent = 'Delete';
+                    deleteBtn.className = 'mt-4 px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700';
+
+                    deleteBtn.onclick = async function() {
+                        if (confirm('Are you sure you want to delete this log?')) {
+                            const response = await fetch(`/provision-logs/delete`, {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                                },
+                                body: JSON.stringify({
+                                    provision_id: info.event.extendedProps.provision_id,
+                                    start_time: info.event.start.toISOString()
+                                })
+                            });
+
+                            if (response.ok) {
+                                alert('Log deleted.');
+                                modal.classList.add('hidden');
+                                calendar.refetchEvents();
+                            } else {
+                                alert('Error deleting log.');
+                            }
+                        }
+                    };
+
+                    modal.querySelector('form').appendChild(deleteBtn);
+                }
             };
 
             const content = document.createElement('div');
