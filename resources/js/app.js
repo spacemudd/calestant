@@ -21,7 +21,22 @@ document.addEventListener('DOMContentLoaded', () => {
         slotMaxTime: '17:00:00',
         firstDay: 0,
         hiddenDays: [5, 6],
-        events: '/events',
+        eventDisplay: 'block',
+        eventTimeFormat: {
+            hour: 'numeric',
+            minute: '2-digit',
+            meridiem: 'short',
+            hour12: false
+        },
+        events: function(fetchInfo, successCallback, failureCallback) {
+            fetch(`/events?start=${fetchInfo.startStr}&end=${fetchInfo.endStr}`)
+                .then(res => res.json())
+                .then(events => {
+                    console.log("Fetched events:", events);
+                    successCallback(events);
+                })
+                .catch(failureCallback);
+        },
         selectable: true,
         select(info) {
             const title = prompt('Enter Event Title:');

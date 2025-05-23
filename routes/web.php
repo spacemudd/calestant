@@ -4,6 +4,7 @@ use App\Http\Controllers\CalendarEventsController;
 use App\Http\Controllers\MyTimetableController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ProvisionController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -21,6 +22,15 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::post('/events', [CalendarEventsController::class, 'store'])->name('events.store');
     Route::get('/events', [CalendarEventsController::class, 'index'])->name('events.index');
+
+    // Provisions routes
+    Route::get('/provisions', [ProvisionController::class, 'index'])->name('provisions.index');
+    Route::get('/provisions/create', [ProvisionController::class, 'create'])->name('provisions.create');
+    Route::post('/provisions', [ProvisionController::class, 'store'])->name('provisions.store');
+    Route::get('/provisions/{provision}', [ProvisionController::class, 'show'])->name('provisions.show');
+    Route::get('/provisions/{provision}/edit', [ProvisionController::class, 'edit'])->name('provisions.edit');
+    Route::put('/provisions/{provision}', [ProvisionController::class, 'update'])->name('provisions.update');
+    Route::delete('/provisions/{provision}', [ProvisionController::class, 'destroy'])->name('provisions.destroy');
 });
 
 require __DIR__.'/auth.php';

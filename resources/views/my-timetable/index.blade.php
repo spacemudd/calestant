@@ -11,6 +11,9 @@
                 <div class="col-span-12">
                     <h1 class="text-2xl font-bold text-center lowercase">Welcome, {{ auth()->user()->name }}.</h1>
                     <p class="text-center mb-4">Here’s your weekly calendar (Sunday–Thursday)</p>
+                    <p class="text-center text-sm text-gray-600 mb-4">
+                        Current week: <strong>Week {{ \App\Helpers\AcademicCalendarHelper::getWeekType(now()) }}</strong>
+                    </p>
 
                     <div id="calendarContainer" class="p-4">
                         <div id="calendar" class="bg-white shadow rounded p-4"></div>
