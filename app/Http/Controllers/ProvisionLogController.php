@@ -32,7 +32,6 @@ class ProvisionLogController extends Controller
             'created_by_id' => auth()->id(),
         ]);
 
-        return redirect()->route('provisions.show', $validated['provision_id'])
-                         ->with('success', 'Log entry created successfully.');
+        return response()->json(['message' => 'Log entry created successfully.']);
     }
 }

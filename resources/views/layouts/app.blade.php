@@ -36,7 +36,7 @@
         <div id="log-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
             <div class="bg-white rounded-lg shadow-lg w-full max-w-md p-6">
                 <h2 class="text-lg font-semibold mb-4">Create Log</h2>
-                <form method="POST" action="{{ route('provision-logs.store') }}">
+                <form id="log-form">
                     @csrf
                     <input type="hidden" name="provision_id">
                     <input type="hidden" name="start_time">
@@ -55,5 +55,36 @@
                 </form>
             </div>
         </div>
-    </body>
+</body>
+<script>
+document.getElementById('log-form').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const form = e.target;
+    const formData = new FormData(form);
+
+    try {
+        const response = await fetch("{{ route('provision-logs.store') }}", {
+            method: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                'Accept': 'application/json'
+            },
+            body: formData
+        });
+
+        if (!response.ok) {
+            const error = await response.json();
+            alert(error.message || 'An error occurred.');
+            return;
+        }
+
+        alert('Log entry saved.');
+        form.reset();
+        document.getElementById('log-modal').classList.add('hidden');
+    } catch (err) {
+        alert('Error saving log. Please try again.');
+        console.error(err);
+    }
+});
+</script>
 </html>
