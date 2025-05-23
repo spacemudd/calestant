@@ -30,4 +30,9 @@ class Provision extends Model
     {
         return $this->hasMany(ProvisionSchedule::class);
     }
+
+    public function logs()
+    {
+        return $this->hasMany(ProvisionLog::class);
+    }
 }

@@ -75,6 +75,7 @@ class CalendarEventsController extends Controller
                             'start' => $startDateTime->toIso8601String(),
                             'end' => $endDateTime->toIso8601String(),
                             'allDay' => false,
+                            'provision_id' => $schedule->provision->id,
                         ];
                     }
                 }

@@ -1,5 +1,3 @@
-
-
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
@@ -50,6 +48,33 @@
                                         </li>
                                     @endforeach
                                 </ul>
+                            @endif
+                        </div>
+                        <div class="mb-4">
+                            <strong>Provision Logs:</strong>
+                            @if($provision->logs->isEmpty())
+                                <p class="text-gray-500">No logs recorded.</p>
+                            @else
+                                <table class="w-full mt-2 border-collapse border border-gray-200">
+                                    <thead>
+                                        <tr class="bg-gray-100">
+                                            <th class="border border-gray-200 px-4 py-2 text-left">Date</th>
+                                            <th class="border border-gray-200 px-4 py-2 text-left">Log Entry</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach($provision->logs as $log)
+                                            <tr>
+                                                <td class="border border-gray-200 px-4 py-2 text-sm text-gray-700">
+                                                    {{ \Carbon\Carbon::parse($log->start_time)->format('l, F j, Y') }}
+                                                </td>
+                                                <td class="border border-gray-200 px-4 py-2">
+                                                    {{ $log->entry }}
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
                             @endif
                         </div>
                         <div class="mt-6">

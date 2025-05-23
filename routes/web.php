@@ -5,6 +5,7 @@ use App\Http\Controllers\MyTimetableController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProvisionController;
+use App\Http\Controllers\ProvisionLogController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -31,6 +32,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/provisions/{provision}/edit', [ProvisionController::class, 'edit'])->name('provisions.edit');
     Route::put('/provisions/{provision}', [ProvisionController::class, 'update'])->name('provisions.update');
     Route::delete('/provisions/{provision}', [ProvisionController::class, 'destroy'])->name('provisions.destroy');
+
+    Route::get('/logs/create', [ProvisionLogController::class, 'create'])->name('provision-logs.create');
+    Route::post('/logs', [ProvisionLogController::class, 'store'])->name('provision-logs.store');
 });
 
 require __DIR__.'/auth.php';

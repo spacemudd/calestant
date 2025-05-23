@@ -33,7 +33,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 .then(res => res.json())
                 .then(events => {
                     console.log("Fetched events:", events);
-                    successCallback(events);
+                    const enhancedEvents = events.map(event => ({
+                        ...event,
+                        extendedProps: {
+                            provision_id: event.provision_id
+                        }
+                    }));
+                    successCallback(enhancedEvents);
                 })
                 .catch(failureCallback);
         },
@@ -84,7 +90,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             logButton.onclick = function(e) {
                 e.stopPropagation();
-                window.location.href = `/logs/create?title=${encodeURIComponent(info.event.title)}&start=${encodeURIComponent(info.event.start.toISOString())}`;
+                window.location.href = `/logs/create?title=${encodeURIComponent(info.event.title)}&start=${encodeURIComponent(info.event.start.toISOString())}&end=${encodeURIComponent(info.event.end.toISOString())}&provision_id=${encodeURIComponent(info.event.extendedProps.provision_id)}`;
             };
 
             const content = document.createElement('div');
