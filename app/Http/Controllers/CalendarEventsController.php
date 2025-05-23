@@ -70,12 +70,19 @@ class CalendarEventsController extends Controller
                             $endDateTime = $startDateTime->copy()->addHour();
                         }
 
+                        $existingLog = $schedule->provision->logs()
+                            ->whereDate('start_time', $startDateTime->toDateString())
+                            ->whereTime('start_time', $startDateTime->toTimeString())
+                            ->first();
+
                         $events[] = [
                             'title' => $schedule->provision->title,
                             'start' => $startDateTime->toIso8601String(),
                             'end' => $endDateTime->toIso8601String(),
                             'allDay' => false,
                             'provision_id' => $schedule->provision->id,
+                            'logged' => (bool) $existingLog,
+                            'log_entry' => $existingLog?->entry,
                         ];
                     }
                 }

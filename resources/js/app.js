@@ -80,7 +80,7 @@ document.addEventListener('DOMContentLoaded', () => {
             wrapper.style.width = '100%';
 
             const logButton = document.createElement('button');
-            logButton.textContent = 'Log';
+            logButton.textContent = info.event.extendedProps.logged ? 'Logged' : 'Log';
             logButton.className = 'absolute right-1 top-1 px-1 py-0.5 bg-blue-500 text-white text-xs rounded hover:bg-blue-600';
 
             logButton.style.display = 'block';
@@ -97,6 +97,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 modal.querySelector('[name="start_time"]').value = info.event.start.toISOString();
                 modal.querySelector('[name="end_time"]').value = info.event.end.toISOString();
                 modal.querySelector('[name="provision_id"]').value = info.event.extendedProps.provision_id;
+
+                if (info.event.extendedProps.logged) {
+                    modal.querySelector('[name="entry"]').value = info.event.extendedProps.log_entry;
+                    modal.querySelector('[name="entry"]').setAttribute('readonly', true);
+                    modal.querySelector('#log-form button[type="submit"]').style.display = 'none';
+                } else {
+                    modal.querySelector('[name="entry"]').value = '';
+                    modal.querySelector('[name="entry"]').setAttribute('readonly', true); // readonly even when no log yet
+                    modal.querySelector('#log-form button[type="submit"]').style.display = 'none'; // hide save button
+                }
 
                 modal.classList.remove('hidden');
             };
