@@ -29,6 +29,14 @@
                             {{ $provision->includes_with_plans ? 'Yes' : 'No' }}
                         </div>
                         <div class="mb-4">
+                            <strong>Starts At:</strong> {{ \Carbon\Carbon::parse($provision->starts_at)->format('F j, Y') }}
+                            <span class="text-gray-500 text-sm">({{ \Carbon\Carbon::parse($provision->starts_at)->diffForHumans() }})</span>
+                        </div>
+                        <div class="mb-4">
+                            <strong>Ends At:</strong> {{ \Carbon\Carbon::parse($provision->ends_at)->format('F j, Y') }}
+                            <span class="text-gray-500 text-sm">({{ \Carbon\Carbon::parse($provision->ends_at)->diffForHumans() }})</span>
+                        </div>
+                        <div class="mb-4">
                             <strong>Recurring Schedule:</strong>
                             @if($provision->schedules->isEmpty())
                                 <p class="text-gray-500">No schedule defined.</p>

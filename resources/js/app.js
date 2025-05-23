@@ -67,7 +67,46 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             calendar.unselect();
         },
+        eventDidMount: function(info) {
+            const wrapper = document.createElement('div');
+            wrapper.style.position = 'relative';
+            wrapper.style.height = '100%';
+            wrapper.style.width = '100%';
+
+            const logButton = document.createElement('button');
+            logButton.textContent = 'Log';
+            logButton.className = 'absolute right-1 top-1 px-1 py-0.5 bg-blue-500 text-white text-xs rounded hover:bg-blue-600';
+
+            logButton.style.display = 'block';
+            logButton.style.position = 'absolute';
+            logButton.style.bottom = '2px';
+            logButton.style.right = '2px';
+
+            logButton.onclick = function(e) {
+                e.stopPropagation();
+                window.location.href = `/logs/create?title=${encodeURIComponent(info.event.title)}&start=${encodeURIComponent(info.event.start.toISOString())}`;
+            };
+
+            const content = document.createElement('div');
+            while (info.el.firstChild) {
+                content.appendChild(info.el.firstChild);
+            }
+            wrapper.appendChild(content);
+            wrapper.appendChild(logButton);
+            info.el.appendChild(wrapper);
+        },
     });
 
     calendar.render();
+
+    // Insert "Log" button above the calendar
+    const logButton = document.createElement('button');
+    logButton.textContent = 'Log';
+    logButton.className = 'mb-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700';
+    logButton.style.display = 'inline-block';
+    logButton.onclick = function () {
+        window.location.href = '/logs/create';
+    };
+
+    calendarEl.parentElement.insertBefore(logButton, calendarEl);
 })

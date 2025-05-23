@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ProvisionSchedule;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use App\Models\CalendarEvent;
@@ -34,12 +35,16 @@ class CalendarEventsController extends Controller
 
     public function index(Request $request)
     {
-        $startOfWeek = Carbon::parse($request->query('start', now()))->startOfWeek(Carbon::SUNDAY);
-        $endOfWeek = Carbon::parse($request->query('end', now()->endOfWeek()));
+        $referenceDate = Carbon::parse($request->query('start', now()));
+        if ($referenceDate->isFriday() || $referenceDate->isSaturday()) {
+            $referenceDate->subWeek();
+        }
+        $startOfWeek = $referenceDate->startOfWeek(Carbon::SUNDAY);
+        $endOfWeek = $referenceDate->copy()->endOfWeek(Carbon::THURSDAY);
 
         $events = [];
 
-        $provisionSchedules = \App\Models\ProvisionSchedule::with('provision')->get();
+        $provisionSchedules = ProvisionSchedule::with('provision')->get();
 
         $currentDate = $startOfWeek->copy();
         while ($currentDate->lte($endOfWeek)) {
@@ -47,11 +52,23 @@ class CalendarEventsController extends Controller
                 if ($currentDate->dayOfWeek == $schedule->day_of_week) {
                     $weekType = AcademicCalendarHelper::getWeekType($currentDate);
 
-                    if ($schedule->week_type === 'both' || $schedule->week_type === $weekType) {
-                        $startDateTime = $currentDate->copy()->setTimeFromTimeString($schedule->start_time);
-                        $endDateTime = $schedule->end_time
-                            ? $currentDate->copy()->setTimeFromTimeString($schedule->end_time)
-                            : $startDateTime->copy()->addHour();
+                    if (
+                        ($schedule->week_type === 'both' || $schedule->week_type === $weekType) &&
+                        $currentDate->gte(Carbon::parse($schedule->provision->starts_at)) &&
+                        $currentDate->lte(Carbon::parse($schedule->provision->ends_at)->addDay()->endOfDay())
+                    ) {
+                        $startTimeHour = $schedule->start_time->hour;
+                        $startTimeMinutes = $schedule->start_time->minute;
+
+                        $startDateTime = $currentDate->copy()->setTime($startTimeHour, $startTimeMinutes);
+
+                        if ($schedule->end_time) {
+                            $endTimeHour = $schedule->end_time->hour;
+                            $endTimeMinutes = $schedule->end_time->minute;
+                            $endDateTime = $currentDate->copy()->setTime($endTimeHour, $endTimeMinutes);
+                        } else {
+                            $endDateTime = $startDateTime->copy()->addHour();
+                        }
 
                         $events[] = [
                             'title' => $schedule->provision->title,
