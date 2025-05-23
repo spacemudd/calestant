@@ -15,6 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const calendar = new Calendar(calendarEl, {
         plugins: [timeGridPlugin, interactionPlugin],
+        timeZone: 'Asia/Riyadh',
         initialView: 'timeGridWeek',
         slotMinTime: '07:00:00',
         slotMaxTime: '17:00:00',
@@ -32,8 +33,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     },
                     body: JSON.stringify({
                         title: title,
-                        start: info.startStr,
-                        end: info.endStr,
+                        start: new Date(info.startStr).toISOString(),
+                        end: new Date(info.endStr).toISOString(),
                         allDay: info.allDay
                     })
                 })
