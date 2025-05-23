@@ -90,7 +90,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
             logButton.onclick = function(e) {
                 e.stopPropagation();
-                window.location.href = `/logs/create?title=${encodeURIComponent(info.event.title)}&start=${encodeURIComponent(info.event.start.toISOString())}&end=${encodeURIComponent(info.event.end.toISOString())}&provision_id=${encodeURIComponent(info.event.extendedProps.provision_id)}`;
+                const modal = document.getElementById('log-modal');
+                if (!modal) return;
+
+                modal.querySelector('[name="title"]').value = info.event.title;
+                modal.querySelector('[name="start_time"]').value = info.event.start.toISOString();
+                modal.querySelector('[name="end_time"]').value = info.event.end.toISOString();
+                modal.querySelector('[name="provision_id"]').value = info.event.extendedProps.provision_id;
+
+                modal.classList.remove('hidden');
             };
 
             const content = document.createElement('div');

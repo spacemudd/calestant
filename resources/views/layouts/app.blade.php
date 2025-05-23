@@ -33,5 +33,27 @@
             </main>
         </div>
         @stack('scripts')
+        <div id="log-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+            <div class="bg-white rounded-lg shadow-lg w-full max-w-md p-6">
+                <h2 class="text-lg font-semibold mb-4">Create Log</h2>
+                <form method="POST" action="{{ route('provision-logs.store') }}">
+                    @csrf
+                    <input type="hidden" name="provision_id">
+                    <input type="hidden" name="start_time">
+                    <input type="hidden" name="end_time">
+                    <input type="hidden" name="title">
+
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-700">Log Entry</label>
+                        <textarea name="entry" rows="4" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm" required></textarea>
+                    </div>
+
+                    <div class="flex justify-end">
+                        <button type="button" onclick="document.getElementById('log-modal').classList.add('hidden')" class="px-4 py-2 mr-2 bg-gray-300 text-black rounded hover:bg-gray-400">Cancel</button>
+                        <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Save</button>
+                    </div>
+                </form>
+            </div>
+        </div>
     </body>
 </html>
